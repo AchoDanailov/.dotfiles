@@ -6,8 +6,8 @@
 # -o pipefail: Ensure that pipes return the exit code of the first failing command.
 set -euo pipefail 
 
-# Standard way to catch the the cwd (which in this moment is the repo dir).
-CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Standard way to catch the path of where the script lives (the repo root).
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 auto_setup_all=false
 setup_symlinks=""
 
@@ -18,6 +18,7 @@ function show_usage() {
     echo $'--auto-setup-all=true | false \t If set to "true" this option executes the installer without prompting on each configuration/tool. Default value: false'.
 }
 
+# function gets invoked with command substituion and assigned in a variable (common bash pattern to return values from a function)
 function prompt_for_section_setup() {
     # read - read user input (-p flag - inline)
     # ${} - parameter expansion (for normal cases works like doing $var_name, in this case - ${var_name^^} changes casing to upper case.)
@@ -25,30 +26,32 @@ function prompt_for_section_setup() {
     echo "${result^^}"
 }
 
+# function for setting up the most common case of dotfiles where they live in the ~ dir.
 function setup() {
     local dotfiles_backup_path="$HOME/.dotfiles_bk_$(date +%Y-%m-%d)"
-    local file="$1"
 
-    # create backup if file exists
-    if [[ -f "$HOME/$file" ]]; then
-        echo "$file exists on the current machine. Creating backup. Backup destination: ${dotfiles_backup_path}/${file}.bk"
+    # create backup if file/dir exists
+    if [[ -e "$HOME/$1" ]]; then
+        echo "$1 exists on the current machine. Creating backup. Backup destination: ${dotfiles_backup_path}/$1.bk"
 
         if [[ ! -d "$dotfiles_backup_path" ]]; then
-            mkdir -p "$(dirname "${dotfiles_backup_path}/${file}")"
+            mkdir -p "$(dirname "${dotfiles_backup_path}/$1")"
         fi
 
-        mv "$HOME/${file}" "${dotfiles_backup_path}/${file}.bk"
+        mv "$HOME/$1" "${dotfiles_backup_path}/$1.bk"
     fi
 
+    # if setup symlinks is chosen => ensure ~/.dotfiles exist, cp file from repo to ~/.dotfiles, symlink to ~
+    # if setup symlinks is not chosen => cp file from repo to ~
     if [[ "${setup_symlinks^^}" == "Y" || "${setup_symlinks^^}" == "YES" || "${setup_symlinks}" == "" ]]; then
         if [[ ! -d "$HOME/.dotfiles" ]]; then
             mkdir -p "$HOME/.dotfiles"
         fi
         
-        cp "${CWD}/${file}" "$HOME/.dotfiles/${file}"
-        ln -s "$HOME/.dotfiles/${file}" "$HOME/${file}"
+        cp -r "${SCRIPT_DIR}/$1" "$HOME/.dotfiles/$1"
+        ln -s "$HOME/.dotfiles/$1" "$HOME/$1"
     else
-        cp "$CWD/${file}" "$HOME/${file}"
+        cp "$SCRIPT_DIR/$1" "$HOME/$1"
     fi
 }
 
@@ -60,6 +63,7 @@ elif [[ $# == 1 ]]; then
         auto_setup_all=true
     elif [[ "$1" == "--auto-setup-all=false" ]]; then
         auto_setup_all=false
+
     else 
         echo "Invalid usage!"
         show_usage
@@ -82,6 +86,7 @@ while true; do
         ${setup_symlinks_result^^} == "YES" ||
         ${setup_symlinks_result} = "" ]]
     then
+        # setup_symlinks is a script global variable (check on top of the script)
         setup_symlinks="$setup_symlinks_result"
         break;
     fi
@@ -94,7 +99,7 @@ if [[ $auto_setup_all == true ]]; then
         setup "$file"
     done
 
-    setup_tool_with_dependencies tmux
+#    setup_tool_with_dependencies tmux
 
     echo "Setup passed successfuly!"
     exit 0

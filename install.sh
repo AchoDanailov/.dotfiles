@@ -6,64 +6,106 @@
 # -o pipefail: Ensure that pipes return the exit code of the first failing command.
 set -euo pipefail 
 
-# Standard way to catch the path of where the script lives (the repo root).
+# Standard way to catch and move into the dir where the script lives (the repo root).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-auto_setup_all=false
-setup_symlinks=""
+DOTFILES_BK_PATH="$HOME/.dotfiles_bk_$(date +%Y-%m-%d-%H-%M)"
+AUTO_SETUP_ALL=false
 
 function show_usage() {
     echo "Usage:"
     echo "$0 [OPTIONS]"
     echo $'\nOptions:'
-    echo $'--auto-setup-all=true | false \t If set to "true" this option executes the installer without prompting on each configuration/tool. Default value: false'.
+    echo $'--auto-setup-all=true | false \t If set to "true" this option executes the installer without prompting on each configuration/tool. Default value: false. See README.md for info on what is being installed and setup.'.
 }
 
 # function gets invoked with command substituion and assigned in a variable (common bash pattern to return values from a function)
-function prompt_for_section_setup() {
+function prompt_if_auto_setup_false() {
+    if [[ "$AUTO_SETUP_ALL" == "true" ]]; then
+        return 0
+    fi
+
+    # ${2:+($2) } => if there is second param add it.
+    local prompt="Setup $1? ${2:+($2) }[Y, n]" 
     # read - read user input (-p flag - inline)
     # ${} - parameter expansion (for normal cases works like doing $var_name, in this case - ${var_name^^} changes casing to upper case.)
-    read -p "Setup $1? [Y, n]" result 
-    echo "${result^^}"
+    read -p "${prompt}" result 
+    
+    local res="${result^^}"
+    if [[ -z "$res" || "$res" == "Y" || "$res" == "YES" ]]; then
+        return 0
+    fi
+
+    return 1
 }
 
 # function for setting up the most common case of dotfiles where they live in the ~ dir.
-function setup() {
-    local dotfiles_backup_path="$HOME/.dotfiles_bk_$(date +%Y-%m-%d)"
+function symlink_config() {
+    local file_name="$1"
+    local source_path="${SCRIPT_DIR}/${file_name}"
+    local dest_path="$HOME/${file_name}"
 
-    # create backup if file/dir exists
-    if [[ -e "$HOME/$1" ]]; then
-        echo "$1 exists on the current machine. Creating backup. Backup destination: ${dotfiles_backup_path}/$1.bk"
-
-        if [[ ! -d "$dotfiles_backup_path" ]]; then
-            mkdir -p "$(dirname "${dotfiles_backup_path}/$1")"
+    # Check if it's already a symlink pointing to the repo
+    if [[ -L "$dest_path" ]]; then
+        # readlink prints the name of the original file of the symlink
+        if [[ "$(readlink "$dest_path")" == "$source_path" ]]; then
+            echo "$file_name already symlinked correctly."
+            echo "Skipping."
+            return
         fi
-
-        mv "$HOME/$1" "${dotfiles_backup_path}/$1.bk"
     fi
 
-    # if setup symlinks is chosen => ensure ~/.dotfiles exist, cp file from repo to ~/.dotfiles, symlink to ~
-    # if setup symlinks is not chosen => cp file from repo to ~
-    if [[ "${setup_symlinks^^}" == "Y" || "${setup_symlinks^^}" == "YES" || "${setup_symlinks}" == "" ]]; then
-        if [[ ! -d "$HOME/.dotfiles" ]]; then
-            mkdir -p "$HOME/.dotfiles"
-        fi
-        
-        cp -r "${SCRIPT_DIR}/$1" "$HOME/.dotfiles/$1"
-        ln -s "$HOME/.dotfiles/$1" "$HOME/$1"
-    else
-        cp "$SCRIPT_DIR/$1" "$HOME/$1"
+    # If file or other symlink exists, back it up
+    if [[ -e "$dest_path" || -L "$dest_path" ]]; then
+        echo "$file_name exists. Moving to backup: ${DOTFILES_BK_PATH}/${file_name}.bk"
+        # Ensure backup dir exists (because of "-p" flag, mkdir exit status is 0 even if dir exists)
+        mkdir -p "$DOTFILES_BK_PATH"
+        # Move the existing file/link
+        mv "$dest_path" "${DOTFILES_BK_PATH}/${file_name}.bk"
     fi
+
+    # Create the symlink
+    ln -s "$source_path" "$dest_path"
+    echo "$file_name setup successfully."
+}
+
+function ensure_pm_installed() {
+    local package_manager="$1"
+    local install_script="$2"
+
+    # command -v "cmd" prints out the cmd name and returns status code 0 if the cmd is found
+    if command -v "$package_manager" &> /dev/null; then
+        echo "$package_manager is already installed."
+        return
+    fi
+
+    echo "Installing $package_manager."
+    eval "$install_script"
+}
+
+function pm_install_package() {
+    local pm="$1"
+    if ! command -v "$pm" &> /dev/null; then
+        echo "$pm was not found. Please install $pm first."
+        return
+    fi
+
+    # !!
+    shift
+
+    # example: $pm=npm $@=("install", "-g", "@google/gemini-cli") => npm install -g @google/gemini-cli"
+    $pm "$@"
+    # "${@: -1} => parameter expansion + @ all args + -1 last arg (last arg always the package being installed.
+    echo "${@: -1} installed successfully."
 }
 
 # args parsing.
 if [[ $# == 0 ]]; then
-    auto_setup_all=false
+    AUTO_SETUP_ALL=false
 elif [[ $# == 1 ]]; then
     if [[ "$1" == "--auto-setup-all=true" ]]; then 
-        auto_setup_all=true
+        AUTO_SETUP_ALL=true
     elif [[ "$1" == "--auto-setup-all=false" ]]; then
-        auto_setup_all=false
-
+        AUTO_SETUP_ALL=false
     else 
         echo "Invalid usage!"
         show_usage
@@ -75,59 +117,107 @@ else
     exit 2
 fi
 
-# prompt for symlink creation
-# Can be improved by introducing an arr of all the files that are being setup and then at the end prompt for symlinks once the files are known to the program user.
-while true; do
-    read -p "Setup symlinks in $HOME/.dotfiles ? [Y, n]" setup_symlinks_result
-
-    if [[ ${setup_symlinks_result^^} == "N" ||
-        ${setup_symlinks_result^^} == "NO" ||
-        ${setup_symlinks_result^^} == "Y" ||
-        ${setup_symlinks_result^^} == "YES" ||
-        ${setup_symlinks_result} = "" ]]
-    then
-        # setup_symlinks is a script global variable (check on top of the script)
-        setup_symlinks="$setup_symlinks_result"
-        break;
+# setup essentials.
+for file in .profile .bashrc .bash_aliases; do
+    if prompt_if_auto_setup_false "$file"; then
+        symlink_config "$file"
     fi
-
-    echo "Invalid input. Valid inputs: Y and N. Default value: Y."
 done
 
-if [[ $auto_setup_all == true ]]; then
-    for file in .profile .bashrc; do
-        setup "$file"
-    done
+# package managers
 
-#    setup_tool_with_dependencies tmux
+# nvm => required on most Debian based distros to install latest versions of node and npm (which are likely required if u want to use modern ts for example) (same commands for update)
+#npm
+if prompt_if_auto_setup_false "npm" $'Dependencies: nvm \nRequired for: gemini-cli. (Installed later from the installer.)'; then
+    ensure_pm_installed "nvm" "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash"
+    # setup and source nvm
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-    echo "Setup passed successfuly!"
-    exit 0
+    ensure_pm_installed "npm" "nvm install-latest-npm"
 fi
 
-# .profile
-result=$(prompt_for_section_setup ".profile")
-if [[ $result == "Y" || $result == "YES" ]]; then
-    setup .profile
+# cargo => If a tool is written in rust its probably faster and safer. Cargo has nice ux too. If i can install smth from cargo i prefer it every time.
+if prompt_if_auto_setup_false "cargo" $'Required for: \nripgrep, \nfd-find, \neza, \ntree-sitter, \nneovim. \n(Installed later from the installer.)'; then
+    ensure_pm_installed "cargo" "curl https://sh.rustup.rs -sSf | sh"
+    # source cargo
+    source "$HOME/.cargo/env"
+
+    # cargo-binstall => allows binary installations for rust projects. (also this versions of the tools are more stable and tested from the developers)
+    ensure_pm_installed "cargo-binstall" "cargo install --locked cargo-binstall"
 fi
 
-# .bashrc
-result=$(prompt_for_section_setup ".bashrc")
-if [[ $result == "Y" || $result == "YES" ]]; then
-    setup .bashrc
+# update && upgrade apt 
+sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y
+
+# tools & apps
+
+# git
+if prompt_if_auto_setup_false "git" $'Required for: \nfzf, \nneovim. \n(Installed later from the installer.)'; then
+    sudo apt install -y git
 fi
 
-## tmux
-#result=$(prompt_for_section_setup ".tmux.conf")
-#if [[ $result == "Y" || $result == "YES" ]]; then
-#    setup_tool_with_dependencies tmux 
-#fi
-#
-## alacritty
-#result=$(prompt_for_section_setup "alacritty")
-#if [[ $result == "Y" || $result == "YES" ]]; then
-#    setup_tool_with_dependencies alacritty
-#fi
+# fzf (update cmnds => "cd ~/.fzf && git pull && ./install")
+if prompt_if_auto_setup_false "fzf" $'Required for: \nneovim, \nhistory integration (ctrl+r) \n(Installed later from the installer.)'; then
+    # the "if" check makes it idempotent (required because of "set -e" at the start of the script).
+    if [[ ! -d "$HOME/.fzf" ]]; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    fi
+    # "--all" flag setups the config at ~/.fzf.bash and ~/.fzf (autocomplete, history integration, etc)
+    ~/.fzf/install --all
+fi
+
+# tmux
+if prompt_if_auto_setup_false "tmux"; then
+    sudo apt install tmux
+    symlink_config ".tmux.conf"
+fi
+
+if prompt_if_auto_setup_false "alacritty"; then
+    pm_install_package "cargo" "install" "--locked" "alacritty"
+fi
+
+# ripgrep
+if prompt_if_auto_setup_false "ripgrep" $'Required for: neovim (Installed later from the installer.)'; then
+    pm_install_package "cargo" "binstall" "ripgrep"
+fi
+
+# fd-find
+if prompt_if_auto_setup_false "fd-find" $'Required for: neovim (Installed later from the installer.)'; then
+    pm_install_package "cargo" "binstall" "fd-find"
+fi
+
+# tree-sitter
+if prompt_if_auto_setup_false "tree-sitter" $'Required for: neovim (Installed later from the installer.)'; then
+    pm_install_package "cargo" "binstall" "tree-sitter"
+fi
+
+# eza
+if prompt_if_auto_setup_false "eza"; then
+    pm_install_package "cargo" "install" "--locked" "eza"
+fi
+
+# gemini-cli
+if prompt_if_auto_setup_false "gemini-cli"; then
+    pm_install_package "npm" "install" "-g" "@google/gemini-cli"
+fi
+
+# neovim
+# bob is a neovim package manager (like nvm is for npm)
+if prompt_if_auto_setup_false "neovim"; then
+    pm_install_package "cargo" "binstall" "bob-nvim"
+    source "$HOME/.cargo/env"
+    bob install stable && bob use stable
+    export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+
+    # kickstart => a couple of plugins + really friendly docs for setting up nvim (maintained by a core nvim maintainer)
+    if prompt_if_auto_setup_false "kickstart" "Neovim starter configuration (best way to learn how to configure neovim. See kickstart on github."; then
+        NVIM_CONFIG_DIR="$HOME/.config/nvim"
+        if [[ ! -d $NVIM_CONFIG_DIR ]]; then
+            git clone https://github.com/nvim-lua/kickstart.nvim.git "$NVIM_CONFIG_DIR"
+        fi
+    fi
+fi
 
 echo "Setup passed successfuly!"
 exit 0

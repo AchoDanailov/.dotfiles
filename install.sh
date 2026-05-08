@@ -25,7 +25,7 @@ function prompt_if_auto_setup_false() {
     fi
 
     # ${2:+($2) } => if there is second param add it.
-    local prompt="Setup $1? ${2:+($2) }[Y, n]" 
+    local prompt=$'\n'"Setup $1? ${2:+$2 }[Y, n]" 
     # read - read user input (-p flag - inline)
     # ${} - parameter expansion (for normal cases works like doing $var_name, in this case - ${var_name^^} changes casing to upper case.)
     read -p "${prompt}" result 
@@ -126,9 +126,23 @@ done
 
 # package managers
 
+# update && upgrade apt 
+echo $'\nUpdating system package manager: apt'
+sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y
+
+# make, gcc, cc (required for cargo)
+if prompt_if_auto_setup_false "make, gcc, cc" $'\nRequired for cargo.\nInstalled and used later in the installer.'; then
+    sudo apt install build-essential
+fi
+
+# curl
+if prompt_if_auto_setup_false "curl" $'\nRequired for npm and cargo.\nInstalled and used later in the installer.'; then
+    sudo apt install curl
+fi
+
 # nvm => required on most Debian based distros to install latest versions of node and npm (which are likely required if u want to use modern ts for example) (same commands for update)
 #npm
-if prompt_if_auto_setup_false "npm" $'Dependencies: nvm \nRequired for: gemini-cli. (Installed later from the installer.)'; then
+if prompt_if_auto_setup_false "npm" $'Dependencies: nvm \nRequired for: gemini-cli. \nInstalled later from the installer.'; then
     ensure_pm_installed "nvm" "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash"
     # setup and source nvm
     export NVM_DIR="$HOME/.nvm"
@@ -138,7 +152,7 @@ if prompt_if_auto_setup_false "npm" $'Dependencies: nvm \nRequired for: gemini-c
 fi
 
 # cargo => If a tool is written in rust its probably faster and safer. Cargo has nice ux too. If i can install smth from cargo i prefer it every time.
-if prompt_if_auto_setup_false "cargo" $'Required for: \nripgrep, \nfd-find, \neza, \ntree-sitter, \nneovim. \n(Installed later from the installer.)'; then
+if prompt_if_auto_setup_false "cargo" $'Required for: \nripgrep, \nfd-find, \neza, \ntree-sitter-cli, \nneovim. \nInstalled later from the installer.'; then
     ensure_pm_installed "cargo" "curl https://sh.rustup.rs -sSf | sh"
     # source cargo
     source "$HOME/.cargo/env"
@@ -147,18 +161,10 @@ if prompt_if_auto_setup_false "cargo" $'Required for: \nripgrep, \nfd-find, \nez
     ensure_pm_installed "cargo-binstall" "cargo install --locked cargo-binstall"
 fi
 
-# update && upgrade apt 
-sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y
-
 # tools & apps
 
-# git
-if prompt_if_auto_setup_false "git" $'Required for: \nfzf, \nneovim. \n(Installed later from the installer.)'; then
-    sudo apt install -y git
-fi
-
 # fzf (update cmnds => "cd ~/.fzf && git pull && ./install")
-if prompt_if_auto_setup_false "fzf" $'Required for: \nneovim, \nhistory integration (ctrl+r) \n(Installed later from the installer.)'; then
+if prompt_if_auto_setup_false "fzf" $'Required for: \nneovim, \nhistory integration (ctrl+r) \nInstalled later from the installer.'; then
     # the "if" check makes it idempotent (required because of "set -e" at the start of the script).
     if [[ ! -d "$HOME/.fzf" ]]; then
         git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -174,27 +180,29 @@ if prompt_if_auto_setup_false "tmux"; then
 fi
 
 if prompt_if_auto_setup_false "alacritty"; then
-    pm_install_package "cargo" "install" "--locked" "alacritty"
+    sudo apt install alacritty
 fi
 
 # ripgrep
-if prompt_if_auto_setup_false "ripgrep" $'Required for: neovim (Installed later from the installer.)'; then
+if prompt_if_auto_setup_false "ripgrep" $'Required for: neovim \nInstalled later from the installer.'; then
     pm_install_package "cargo" "binstall" "ripgrep"
 fi
 
 # fd-find
-if prompt_if_auto_setup_false "fd-find" $'Required for: neovim (Installed later from the installer.)'; then
+if prompt_if_auto_setup_false "fd-find" $'Required for: neovim \nInstalled later from the installer.'; then
     pm_install_package "cargo" "binstall" "fd-find"
 fi
 
-# tree-sitter
-if prompt_if_auto_setup_false "tree-sitter" $'Required for: neovim (Installed later from the installer.)'; then
-    pm_install_package "cargo" "binstall" "tree-sitter"
+# tree-sitter-cli
+if prompt_if_auto_setup_false "tree-sitter-cli" $'Dependencies:\n clang (handled by the installer if you confirm to install tree-sitter-cli) \nRequired for: neovim \nInstalled later from the installer.'; then
+    # dependencies: clang
+    sudo apt install clang libclang-dev
+    pm_install_package "cargo" "binstall" "tree-sitter-cli"
 fi
 
 # eza
 if prompt_if_auto_setup_false "eza"; then
-    pm_install_package "cargo" "install" "--locked" "eza"
+    pm_install_package "cargo" "binstall" "eza"
 fi
 
 # gemini-cli
@@ -208,7 +216,9 @@ if prompt_if_auto_setup_false "neovim"; then
     pm_install_package "cargo" "binstall" "bob-nvim"
     source "$HOME/.cargo/env"
     bob install stable && bob use stable
-    export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+#    export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+    echo "export PATH=\"$HOME/.local/share/bob/nvim-bin:$PATH\"" >> "$HOME/.bashrc"
+    . "$HOME/.bashrc"
 
     # kickstart => a couple of plugins + really friendly docs for setting up nvim (maintained by a core nvim maintainer)
     if prompt_if_auto_setup_false "kickstart" "Neovim starter configuration (best way to learn how to configure neovim. See kickstart on github."; then
@@ -219,5 +229,5 @@ if prompt_if_auto_setup_false "neovim"; then
     fi
 fi
 
-echo "Setup passed successfuly!"
+echo $'\nSetup passed successfuly!'
 exit 0

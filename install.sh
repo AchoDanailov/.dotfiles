@@ -134,7 +134,7 @@ if prompt_if_auto_setup_false "npm" $'Dependencies: nvm \nRequired for: gemini-c
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-    ensure_pm_installed "npm" "nvm install-latest-npm"
+    nvm install --lts
 fi
 
 # cargo => If a tool is written in rust its probably faster and safer. Cargo has nice ux too. If i can install smth from cargo i prefer it every time.

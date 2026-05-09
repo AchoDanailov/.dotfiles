@@ -1,0 +1,7 @@
+[init]
+	defaultBranch = main
+[user]
+	email = danailov.angel.99@gmail.com
+	name = A. Danailov
+[core]
+	editor = nvim

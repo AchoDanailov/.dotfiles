@@ -115,8 +115,8 @@ else
     exit 2
 fi
 
-# setup essentials.
-for file in .profile .bashrc .bash_aliases; do
+# setup dotfiles
+for file in .profile .bashrc .bash_aliases .gitconfig; do
     if prompt_if_auto_setup_false "$file"; then
         symlink_config "$file"
     fi
@@ -169,6 +169,21 @@ if prompt_if_auto_setup_false "fzf" $'Required for: \nneovim, \nhistory integrat
     fi
     # "--all" flag setups the config at ~/.fzf.bash and ~/.fzf (autocomplete, history integration, etc)
     ~/.fzf/install --all
+fi
+
+# gh cli
+if prompt_if_auto_setup_false "gh"; then
+    sudo apt install gh
+fi
+
+# ncdu
+if prompt_if_auto_setup_false ncdu; then
+    sudo apt install ncdu
+fi
+
+# htop
+if prompt_if_auto_setup_false htop; then
+    sudo apt install htop
 fi
 
 # tmux

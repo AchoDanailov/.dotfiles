@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# TODO: Test the script on a VM.
-#
+
 # -e: Exit immediately if a command fails.
 # -u: Exit if you try to use an uninitialized variable.
 # -o pipefail: Ensure that pipes return the exit code of the first failing command.

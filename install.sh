@@ -18,7 +18,6 @@ function show_usage() {
     echo $'--auto-setup-all=true | false \t If set to "true" this option executes the installer without prompting on each configuration/tool. Default value: false. See README.md for info on what is being installed and setup.'.
 }
 
-# function gets invoked with command substituion and assigned in a variable (common bash pattern to return values from a function)
 function prompt_if_auto_setup_false() {
     if [[ "$AUTO_SETUP_ALL" == "true" ]]; then
         return 0
@@ -216,9 +215,6 @@ if prompt_if_auto_setup_false "neovim"; then
     pm_install_package "cargo" "binstall" "bob-nvim"
     source "$HOME/.cargo/env"
     bob install stable && bob use stable
-#    export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
-    echo "export PATH=\"$HOME/.local/share/bob/nvim-bin:$PATH\"" >> "$HOME/.bashrc"
-    . "$HOME/.bashrc"
 
     # kickstart => a couple of plugins + really friendly docs for setting up nvim (maintained by a core nvim maintainer)
     if prompt_if_auto_setup_false "kickstart" "Neovim starter configuration (best way to learn how to configure neovim. See kickstart on github."; then

@@ -11,6 +11,7 @@ esac
 # --- PATH ---
 export PATH="$HOME/bin:$PATH"
 export PATH="$PATH:/opt/nvim/"
+export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
 
 # --- ENVIRONMENT ---
 export EDITOR=nvim

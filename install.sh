@@ -5,7 +5,7 @@
 # -o pipefail: Ensure that pipes return the exit code of the first failing command.
 set -euo pipefail 
 
-# Standard way to catch and move into the dir where the script lives (the repo root).
+# Standard bash-ism way to catch and move into the dir where the script lives (the repo root).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_BK_PATH="$HOME/.dotfiles_bk_$(date +%Y-%m-%d-%H-%M)"
 AUTO_SETUP_ALL=false
@@ -22,7 +22,7 @@ function prompt_if_auto_setup_false() {
         return 0
     fi
 
-    # ${2:+($2) } => if there is second param add it.
+    # ${2:+$2 } => if there is second param add it.
     local prompt=$'\n'"Setup $1? ${2:+$2 }[Y, n]" 
     # read - read user input (-p flag - inline)
     # ${} - parameter expansion (for normal cases works like doing $var_name, in this case - ${var_name^^} changes casing to upper case.)
@@ -192,6 +192,7 @@ if prompt_if_auto_setup_false "tmux"; then
     symlink_config ".tmux.conf"
 fi
 
+# alacritty
 if prompt_if_auto_setup_false "alacritty"; then
     sudo apt install alacritty
 fi

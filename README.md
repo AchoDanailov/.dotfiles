@@ -32,19 +32,23 @@ These are my personal dotfiles. And it goes beyond just my dotfiles.
 - When ran starts asking for confirmation for each tool or config file and then installs or symlinks the tool or config file (or skips if confirmation was not given).
 - If a config file or symlink pointing to some other file exists already it is backed up under `~/.dotfiles_bk_(current date and time)`.
 - If a symlink is found that points to a file in the repo source that config file is skipped.
-- It is idempotent (it can be ran safely multiple times)
+- It is idempotent (it can be ran safely multiple times)  
+
+**Note: This script currently only supports Debian-based distributions as it relies on the APT package manager.**
 
 ---
 
-## Setup
+## Setup and Usage
 
 ```bash
 git clone https://github.com/AchoDanailov/.dotfiles.git   
 cd .dotfiles  
-chmod u+x install.sh  
-./install.sh  
+chmod u+x install.sh && ./install.sh  
 ```
-**Note: Currently works only on debian based distros.**
+
+### Options
+`install.sh`
+- `--auto-setup-all=true|false` - skips the prompts that are not package managers prompts (default value: false)
 
 ---
 

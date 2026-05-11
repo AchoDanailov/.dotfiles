@@ -1,3 +1,10 @@
+/* extensions configuretions included:
+    - autoHide => "Auto Hide" (https://marketplace.visualstudio.com/items?itemName=sirmspencer.vscode-autohide)
+    - liveServer => "Live Server" (https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+    - vim => "VSCode Vim" (https://marketplace.visualstudio.com/items?itemName=vscodevim.vim)
+    - vscode_custom_css => "Custom CSS and JS Loader" (https://marketplace.visualstudio.com/items?itemName=be5invis.vscode-custom-css)
+*/
+
 {
     "autoHide.autoHideRightSideBar": false,
     "autoHide.autoHidePanel": false,

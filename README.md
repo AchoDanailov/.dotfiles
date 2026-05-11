@@ -2,18 +2,20 @@
 
 ## Description
 
-These are my personal dotfiles. And it goes beyond just my dotfiles. 
+These are my personal dotfiles. And it goes beyond just my dotfiles, by adding an installer program that automates alot of the first couple of hours installation and configuration of tools that happens when you start working on a new machine.
 
 ### What is included
 
-#### Dotfiles included:
+#### Config files and Dotfiles:
 - .profile
 - .bashrc
 - .bash_aliases
 - .tmux.conf
 - .gitconfig
+- settings.json (vscode's user settings.json)
+- editor_custom_layout.css (VSCode's Custom CSS and JS Loader extension css file)
 
-#### Tools included:
+#### Tools:
 - [curl](https://github.com/curl/curl)
 - [fzf](https://github.com/junegunn/fzf) - improves searching through the commands history(ctrl+r) and is required for kickstart.nvim
 - [gh](https://cli.github.com/) - GitHub CLI
@@ -32,7 +34,7 @@ These are my personal dotfiles. And it goes beyond just my dotfiles.
 - When ran starts asking for confirmation for each tool or config file and then installs or symlinks the tool or config file (or skips if confirmation was not given).
 - If a config file or symlink pointing to some other file exists already it is backed up under `~/.dotfiles_bk_(current date and time)`.
 - If a symlink is found that points to a file in the repo source that config file is skipped.
-- It is idempotent (it can be ran safely multiple times)  
+- It is idempotent (it can be ran safely multiple times)
 
 **Note: This script currently only supports Debian-based distributions as it relies on the APT package manager.**
 
@@ -41,9 +43,9 @@ These are my personal dotfiles. And it goes beyond just my dotfiles.
 ## Setup and Usage
 
 ```bash
-git clone https://github.com/AchoDanailov/.dotfiles.git   
-cd .dotfiles  
-chmod u+x install.sh && ./install.sh  
+git clone https://github.com/AchoDanailov/.dotfiles.git
+cd .dotfiles
+chmod u+x install.sh && ./install.sh
 ```
 
 ### Options

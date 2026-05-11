@@ -50,7 +50,7 @@ function symlink_to_path() {
     fi
 
     if [[ -e "$dest_path" || -L "$dest_path" ]]; then
-        echo "$dest_path exists. Moving to backup: ${DOTFILES_BK_PATH}/${file_name}.bk"
+        echo "$dest_path exists. Moving to backup: ${DOTFILES_BK_PATH}/${dest_path}.bk"
 
         # Ensure backup dir exists (this wont throw because of "-p" flag, mkdir exit status is 0 even if dir exists. See: man mkdir)
         mkdir -p "$DOTFILES_BK_PATH"
@@ -58,6 +58,7 @@ function symlink_to_path() {
         mv "$dest_path" "${DOTFILES_BK_PATH}/${dest_path}.bk"
     fi
 
+    mkdir -p "$(dirname "${dest_path}")"
     ln -s "$source_path" "$dest_path"
     echo "\"$dest_path\" -> \"$source_path\" symbolic link setup successfully."
 }
@@ -111,12 +112,25 @@ else
     exit 2
 fi
 
-# setup dotfiles
+# setup home dotfiles
 for file in .profile .bashrc .bash_aliases .gitconfig; do
     if prompt_if_auto_setup_false "$file"; then
         symlink_to_path "${SCRIPT_DIR}/${file}" "${HOME}/${file}"
     fi
 done
+
+# vscode's user setting.json (still requires installation of vscode seperately)
+if prompt_if_auto_setup_false "settings.json" $'\nVSCodes User settings.json file.\nPath: ~/.config/Code/User/settings.json\nNOTE: The installed does not install VSCode. If you want to install VSCode, see: "https://code.visualstudio.com/download".';
+then
+    symlink_to_path "${SCRIPT_DIR}/settings.json" "$HOME/.config/Code/User/settings.json"
+fi
+
+# vscode's "Custom CSS and JS" extension css file (if "Custom CSS and JS" extension is installed this file will modify vscode editor styles. See "Custom CSS and JS" extension.)
+if prompt_if_auto_setup_false "editor_custom_layout.css" $'\nVSCode\'s "Custom CSS and JS" extension file.\nThis file will modify VSCode\'s layout.\nTo get it running see "Custom CSS and JS" extension.\nPath: ~/.vscode/editor_custom_layout.css\nNOTE: The installed does not install VSCode. If you want to install VSCode, see: "https://code.visualstudio.com/download".';
+then
+    symlink_to_path "${SCRIPT_DIR}/editor_custom_layout.css" "$HOME/.vscode/editor_custom_layout.css"
+fi
+
 
 # update && upgrade apt
 echo $'\nUpdating system package manager: apt'
@@ -145,7 +159,8 @@ fi
 
 # NOTE: Keep in mind this might introduce long term problems. Since the install.sh script is relying on cargo way too much.
 # TODO: Almost all the tools installed with cargo can be installed from the original repo. Think about which is better package manager vs github source repo.
-if prompt_if_auto_setup_false "cargo" $'Required for: \nripgrep, \nfd-find, \neza, \ntree-sitter-cli, \nneovim. \nInstalled later from the installer.'; then
+if prompt_if_auto_setup_false "cargo" $'Required for: \nripgrep, \nfd-find, \neza, \ntree-sitter-cli, \nneovim. \nInstalled later from the installer.';
+then
     ensure_pm_installed "cargo" "curl https://sh.rustup.rs -sSf | sh"
     source "$HOME/.cargo/env"
 
@@ -200,7 +215,8 @@ if prompt_if_auto_setup_false "fd-find" $'Required for: neovim \nInstalled later
 fi
 
 # tree-sitter-cli
-if prompt_if_auto_setup_false "tree-sitter-cli" $'Dependencies:\n clang (handled by the installer if you confirm to install tree-sitter-cli) \nRequired for: neovim \nInstalled later from the installer.'; then
+if prompt_if_auto_setup_false "tree-sitter-cli" $'Dependencies:\n clang (handled by the installer if you confirm to install tree-sitter-cli) \nRequired for: neovim \nInstalled later from the installer.';
+then
     # dependencies: clang
     sudo apt install clang libclang-dev
     pm_install_package "cargo" "binstall" "tree-sitter-cli"
@@ -224,7 +240,8 @@ if prompt_if_auto_setup_false "neovim"; then
     bob install stable && bob use stable
 
     # kickstart.nvim => a couple of plugins + really friendly docs for setting up nvim (maintained by a core nvim maintainer)
-    if prompt_if_auto_setup_false "kickstart" "Neovim starter configuration (best way to learn how to configure neovim. See kickstart on github."; then
+    if prompt_if_auto_setup_false "kickstart" "Neovim starter configuration (best way to learn how to configure neovim. See kickstart on github.";
+    then
         NVIM_CONFIG_DIR="$HOME/.config/nvim"
         if [[ ! -d $NVIM_CONFIG_DIR ]]; then
             git clone https://github.com/nvim-lua/kickstart.nvim.git "$NVIM_CONFIG_DIR"

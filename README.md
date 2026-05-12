@@ -6,16 +6,16 @@ These are my personal dotfiles. And it goes beyond just my dotfiles, by adding a
 
 ### What is included
 
-#### Config files and Dotfiles:
+#### **Config files and Dotfiles:**
 - .profile
 - .bashrc
 - .bash_aliases
 - .tmux.conf
 - .gitconfig
-- settings.json (vscode's user settings.json)
+- settings.json (VSCode's User settings.json. Path: ~/.config/Code/User/settings.json)
 - editor_custom_layout.css (VSCode's Custom CSS and JS Loader extension css file)
 
-#### Tools:
+#### **Tools:**
 - [curl](https://github.com/curl/curl)
 - [fzf](https://github.com/junegunn/fzf) - improves searching through the commands history(ctrl+r) and is required for kickstart.nvim
 - [gh](https://cli.github.com/) - GitHub CLI
@@ -29,14 +29,20 @@ These are my personal dotfiles. And it goes beyond just my dotfiles, by adding a
 - [gemini-cli](https://github.com/google-gemini/gemini-cli)
 - [neovim](https://github.com/neovim/neovim) + [kickstart](https://github.com/nvim-lua/kickstart.nvim)
 
-#### Installer script - `install.sh`
+#### **Installer script - `install.sh`**
 - Installs the cli tools that I use, installs their dependencies if any and sets up everything related to the environment variables if there is any setup to be done.
 - When ran starts asking for confirmation for each tool or config file and then installs or symlinks the tool or config file (or skips if confirmation was not given).
 - If a config file or symlink pointing to some other file exists already it is backed up under `~/.dotfiles_bk_(current date and time)`.
 - If a symlink is found that points to a file in the repo source that config file is skipped.
 - It is idempotent (it can be ran safely multiple times)
 
-**Note: This script currently only supports Debian-based distributions as it relies on the APT package manager.**
+---
+
+**Note: The installer heavily relies on the APT and Cargo package managers for installing software packages and dependencies.**
+
+**The installer has been tested on:**
+- Pop!_OS 24.04 (which is on top of Ubuntu 24.04),
+- Ubuntu 26.04
 
 ---
 
@@ -47,6 +53,7 @@ git clone https://github.com/AchoDanailov/.dotfiles.git
 cd .dotfiles
 chmod u+x install.sh && ./install.sh
 ```
+**Important: Review the code and decide if you want to run it yourself!**
 
 ### Options
 `install.sh`

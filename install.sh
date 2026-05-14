@@ -50,12 +50,17 @@ function symlink_to_path() {
     fi
 
     if [[ -e "$dest_path" || -L "$dest_path" ]]; then
-        echo "$dest_path exists. Moving to backup: ${DOTFILES_BK_PATH}/${dest_path}.bk"
+        # =~ is the operator for regex pattern matching
+        if [[ "$dest_path" =~ ^/ ]]; then
+            local backup_dest="${DOTFILES_BK_PATH}${dest_path}.bk"
+        else
+            local backup_dest="${DOTFILES_BK_PATH}/${dest_path}.bk"
+        fi
 
         # Ensure backup dir exists (this wont throw because of "-p" flag, mkdir exit status is 0 even if dir exists. See: man mkdir)
-        mkdir -p "$DOTFILES_BK_PATH"
-
-        mv "$dest_path" "${DOTFILES_BK_PATH}/${dest_path}.bk"
+        mkdir -p "$(dirname "$backup_dest")"
+        echo "$dest_path exists. Moving to backup: $backup_dest"
+        mv "$dest_path" "$backup_dest"
     fi
 
     mkdir -p "$(dirname "${dest_path}")"

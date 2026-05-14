@@ -12,6 +12,7 @@ esac
 export PATH="$HOME/bin:$PATH"
 export PATH="$PATH:/opt/nvim/"
 export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
+export PATH=/home/danailov/.opencode/bin:$PATH
 
 # --- ENVIRONMENT ---
 export EDITOR=nvim

@@ -39,7 +39,7 @@
     "editor.wordWrap": "off",
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 0,
-    "files.trimTrailingWhitespace": true,
+    "files.trimTrailingWhitespace": false,
     "git.openRepositoryInParentFolders": "always",
     "github.copilot.enable": {
         "*": false,

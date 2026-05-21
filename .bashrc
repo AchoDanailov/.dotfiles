@@ -97,13 +97,6 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 eval "$(dircolors)"
 
-# --- ALIASES ---
-alias ls='ls $LS_OPTIONS'
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
 # "." char means "source" in POSIX standard ("source" is bash version)
 # --- EXTERNAL FILES ---
 if [ -f ~/.bash_aliases ]; then

@@ -1,5 +1,5 @@
 /* extensions configuretions included:
-    - autoHide => "Auto Hide" (https://marketplace.visualstudio.com/items?itemName=sirmspencer.vscode-autohide)
+    - autoHide => "Auto Hide" (https://github.com/sr-tream/vscode-autohide)
     - liveServer => "Live Server" (https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
     - vim => "VSCode Vim" (https://marketplace.visualstudio.com/items?itemName=vscodevim.vim)
     - vscode_custom_css => "Custom CSS and JS Loader" (https://marketplace.visualstudio.com/items?itemName=be5invis.vscode-custom-css)
@@ -42,10 +42,7 @@
     "files.trimTrailingWhitespace": false,
     "git.openRepositoryInParentFolders": "always",
     "github.copilot.enable": {
-        "*": false,
-        "plaintext": false,
-        "markdown": false,
-        "scminput": false
+        "*": true,
     },
     "js/ts.updateImportsOnFileMove.enabled": "always",
     "liveServer.settings.donotShowInfoMsg": true,
@@ -237,4 +234,5 @@
     ],
     "workbench.activityBar.location": "hidden",
     "workbench.colorTheme": "JetBrains Rider Dark Theme",
+    "chat.viewSessions.orientation": "stacked",
 }

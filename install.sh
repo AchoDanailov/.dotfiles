@@ -157,7 +157,7 @@ fi
 
 # nvm => required on most Debian based distros to install latest versions of node and npm (which are likely required if u want to use modern ts for example) (same commands for update)
 #npm
-if prompt_if_auto_setup_false "npm" $'Dependencies: nvm \nRequired for: gemini-cli. \nInstalled later from the installer.'; then
+if prompt_if_auto_setup_false "npm"; then
     ensure_pm_installed "nvm" "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash"
     # setup and source nvm
     export NVM_DIR="$HOME/.nvm"
@@ -234,11 +234,6 @@ fi
 # eza
 if prompt_if_auto_setup_false "eza"; then
     pm_install_package "cargo" "binstall" "eza"
-fi
-
-# gemini-cli
-if prompt_if_auto_setup_false "gemini-cli"; then
-    pm_install_package "npm" "install" "-g" "@google/gemini-cli"
 fi
 
 # neovim

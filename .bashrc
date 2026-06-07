@@ -11,6 +11,7 @@ esac
 # --- PATH ---
 export PATH="$HOME/bin:$PATH"
 export PATH="$PATH:/opt/nvim/"
+export PATH="$PATH:/opt/rider/bin/"
 export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
 export PATH=/home/danailov/.opencode/bin:$PATH
 
@@ -125,3 +126,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# gh completions
+eval "$(gh completion -s bash)"

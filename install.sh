@@ -136,6 +136,10 @@ then
     symlink_to_path "${SCRIPT_DIR}/editor_custom_layout.css" "$HOME/.vscode/editor_custom_layout.css"
 fi
 
+# JetBrains rider's plugin `VimIdea` .ideavimrc configuration file
+if prompt_if_auto_setup_false ".vimidearc" $'\nJetBrains Rider\'s VimIdea plugin configuration file.'; then
+    symlink_to_path "${SCRIPT_DIR}/.vimidearc" "$HOME/.vimidearc"
+fi
 
 # update && upgrade apt
 echo $'\nUpdating system package manager: apt'

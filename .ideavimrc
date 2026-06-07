@@ -1,0 +1,76 @@
+" Leader key
+let mapleader=" "
+
+" Line numbers
+set number
+set relativenumber
+
+" Search
+set ignorecase
+set smartcase
+set hlsearch
+set incsearch
+
+" Clipboard
+set clipboard+=unnamed,unnamedplus
+
+" Cursor & wrapping
+set scrolloff=5
+set nowrap
+set showmode
+
+" Undo
+set undolevels=1000
+
+" Simple mappings
+nnoremap <leader>w :w<CR>
+nnoremap <leader>x :x<CR>
+
+" Window navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+
+" Go to implementation
+nnoremap gi :action GotoImplementation<CR>
+
+" File/project navigation
+nnoremap <leader>e :action ActivateProjectToolWindow<CR>
+nnoremap <leader><space> :action SearchEverywhere<CR>
+nnoremap <leader>sf :action GotoFile<CR>
+nnoremap <leader>ss :action GotoSymbol<CR>
+nnoremap <leader>sg :action FindInPath<CR>
+
+" Code editing
+nnoremap <leader>r :action RenameElement<CR>
+nnoremap <leader>d :action Debug<CR>
+nnoremap <leader>b :action ToggleLineBreakpoint<CR>
+nnoremap <leader>c :action CommentByLineComment<CR>
+
+" Window splits
+nnoremap <C-w>v :action SplitVertically<CR>
+nnoremap <C-w>s :action SplitHorizontally<CR>
+
+" Tabs
+nnoremap <leader>n :action NextTab<CR>
+nnoremap <leader>p :action PreviousTab<CR>
+nnoremap <leader>q :action CloseContent<CR>
+
+" Documentation & errors
+nnoremap K :action QuickJavaDoc<CR>
+nnoremap <leader>i :action ShowErrorDescription<CR>
+
+" Indenting in visual mode
+xnoremap < <gv
+xnoremap > >gv
+
+" Database tool window
+nnoremap <leader>db :action ActivateDatabaseToolWindow<CR>
+
+" Open in browser
+nnoremap <leader>o :action OpenInBrowser<CR>
+
+" Popup/list navigation (Ctrl+N/P while typing in search boxes)
+sethandler <C-n> a:vim
+sethandler <C-p> a:vim

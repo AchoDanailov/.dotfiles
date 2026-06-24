@@ -253,5 +253,11 @@ if prompt_if_auto_setup_false "neovim"; then
     fi
 fi
 
+# opencode
+if prompt_if_auto_setup_false "opencode"; then
+    curl -fsSL https://opencode.ai/install | bash
+fi
+
+
 echo $'\nSetup passed successfuly!'
 exit 0

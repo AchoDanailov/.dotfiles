@@ -24,8 +24,8 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # --- HISTORY ---
 HISTSIZE=5000
 HISTFILESIZE=10000
-HISTCONTROL=ignoredups:erasedups
-shopt -s histappend
+HISTCONTROL=            # ignoredups:erasedups = overwrites same commands / no value = keeps track 1 to 1 of the executed cmds
+shopt -s histappend     # when a bash session is closed the in memory history gets appended to the .bash_history file
 
 # --- LESS OPTIONS ---
 export LESSHISTFILE=/dev/null

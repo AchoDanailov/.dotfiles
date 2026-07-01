@@ -14,6 +14,8 @@ These are my personal dotfiles. And it goes beyond just my dotfiles, by adding a
 - .gitconfig
 - settings.json (VSCode's User settings.json. Path: ~/.config/Code/User/settings.json)
 - editor_custom_layout.css (VSCode's Custom CSS and JS Loader extension css file)
+- .ideavimrc (JetBrains Rider\'s VimIdea plugin configuration file)
+- alacritty.toml
 
 #### **Tools:**
 - [curl](https://github.com/curl/curl)
@@ -26,7 +28,7 @@ These are my personal dotfiles. And it goes beyond just my dotfiles, by adding a
 - [ripgrep](https://github.com/BurntSushi/ripgrep) - better grep
 - [fd-find](https://github.com/sharkdp/fd) - better find
 - [eza](https://github.com/eza-community/eza) - better ls
-- [gemini-cli](https://github.com/google-gemini/gemini-cli)
+- [opencode](https://github.com/anomalyco/opencode/)
 - [neovim](https://github.com/neovim/neovim) + [kickstart](https://github.com/nvim-lua/kickstart.nvim)
 
 #### **Installer script - `install.sh`**

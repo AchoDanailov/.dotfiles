@@ -13,9 +13,8 @@ These are my personal dotfiles. And it goes beyond just my dotfiles, by adding a
 - .tmux.conf
 - .gitconfig
 - settings.json (VSCode's User settings.json. Path: ~/.config/Code/User/settings.json)
-- editor_custom_layout.css (VSCode's Custom CSS and JS Loader extension css file)
 - .ideavimrc (JetBrains Rider\'s VimIdea plugin configuration file)
-- alacritty.toml
+- alacritty.toml (Alacritty's config file. Path: ~/.config/alacritty/alacritty.toml)
 
 #### **Tools:**
 - [curl](https://github.com/curl/curl)

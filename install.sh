@@ -211,6 +211,11 @@ fi
 # alacritty
 if prompt_if_auto_setup_false "alacritty"; then
     sudo apt install alacritty
+
+    if prompt_if_auto_setup_false $'\nInstalled successfully!\nDo you want to setup Alacrity configuration file (path: ~/.config/alacritty/alacritty.toml)?\n[Y, n]'; 
+    then
+        symlink_to_path "${SCRIPT_DIR}/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
+    fi
 fi
 
 # ripgrep

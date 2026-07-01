@@ -1,0 +1,14 @@
+[font]  
+size = 14.25
+
+[colors]  
+primary = { foreground = "#c5c8c6", background = "#1d1f21" }  
+normal = { black = "#1d1f21", red = "#cc6666", green = "#b5bd68", yellow = "#f0c674", blue = "#81a2be", magenta = "#b294bb", cyan = "#8abeb7", white = "#c5c8c6" }
+
+[window]  
+opacity = 0.9
+blur = true
+
+[cursor]  
+style = { shape = "Block", blinking = "On" }  
+blink_interval = 750

@@ -241,6 +241,14 @@ if prompt_if_auto_setup_false "eza"; then
     pm_install_package "cargo" "binstall" "eza"
 fi
 
+# diff-so-fancy
+if prompt_if_auto_setup_false "diff-so-fancy" $'Better git diff'; then
+    # add the repository where the binaries sit 
+    sudo add-apt-repository ppa:aos1/diff-so-fancy
+    sudo apt update
+    sudo apt install diff-so-fancy
+fi
+
 # neovim
 # bob is a neovim package manager (like nvm is for npm)
 if prompt_if_auto_setup_false "neovim"; then

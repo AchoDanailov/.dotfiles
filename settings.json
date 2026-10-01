@@ -1,4 +1,6 @@
 {
+    "autoHide.autoHideRightSideBar": false,
+    "autoHide.autoHidePanel": false,
     "chat.agentsControl.enabled": "compact",
     "chat.commandCenter.enabled": false,
     "diffEditor.ignoreTrimWhitespace": false,
@@ -34,9 +36,13 @@
     "files.trimTrailingWhitespace": false,
     "git.openRepositoryInParentFolders": "always",
     "github.copilot.enable": {
-        "*": true
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
     },
     "js/ts.updateImportsOnFileMove.enabled": "always",
+    "liveServer.settings.donotShowInfoMsg": true,
     "security.workspace.trust.untrustedFiles": "open",
     "scm.diffDecorations": "none",
     "vim.foldfix": true,
@@ -198,6 +204,15 @@
         {
             "before": [
                 "<leader>",
+                "o"
+            ],
+            "commands": [
+                "liveServer.goOnline"
+            ]
+        },
+        {
+            "before": [
+                "<leader>",
                 "i"
             ],
             "commands": [
@@ -211,7 +226,11 @@
     "workbench.editor.enablePreviewFromQuickOpen": false,
     "workbench.tree.indent": 20,
     "workbench.tree.renderIndentGuides": "always",
+    "vscode_custom_css.imports": [
+        "file:///home/danailov/.vscode/editor_custom_layout.css"
+    ],
     "workbench.activityBar.location": "hidden",
     "workbench.colorTheme": "JetBrains Rider Dark Theme",
-    "chat.viewSessions.orientation": "stacked"
+    "chat.viewSessions.orientation": "stacked",
+    "excalidraw.theme": "dark"
 }

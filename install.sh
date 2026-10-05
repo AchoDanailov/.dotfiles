@@ -268,7 +268,7 @@ fi
 
 # opencode
 if prompt_if_auto_setup_false "opencode"; then
-    curl -fsSL https://opencode.ai/install | bash
+    curl -fsSL https://opencode.ai/v2/install | bash
 fi
 
 

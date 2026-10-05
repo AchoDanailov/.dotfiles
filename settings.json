@@ -232,5 +232,6 @@
     "workbench.activityBar.location": "hidden",
     "workbench.colorTheme": "JetBrains Rider Dark Theme",
     "chat.viewSessions.orientation": "stacked",
-    "excalidraw.theme": "dark"
+    "excalidraw.theme": "dark",
+    "python.analysis.typeCheckingMode": "strict"
 }

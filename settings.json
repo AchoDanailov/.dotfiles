@@ -1,9 +1,24 @@
 {
+    "autoHide.autoHideLeftSideBar": false,
     "autoHide.autoHideRightSideBar": false,
     "autoHide.autoHidePanel": false,
-    "chat.agentsControl.enabled": "compact",
+
+    "chat.titleBar.openInAgentsWindow.enabled": false,
+    "chat.agentsControl.enabled": "hidden",
     "chat.commandCenter.enabled": false,
-    "diffEditor.ignoreTrimWhitespace": false,
+    "chat.viewSessions.orientation": "stacked",
+    "github.copilot.enable": {
+        "sql": true
+    },
+
+    "claudeCode.preferredLocation": "panel",
+    "claudeCode.hideOnboarding": true,
+    "claudeCode.focusView": false,
+
+    "diffEditor.ignoreTrimWhitespace": true,
+    "diffEditor.renderGutterMenu": true,
+    "diffEditor.renderSideBySide": false,
+
     "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit"
     },
@@ -30,21 +45,20 @@
     "editor.tabSize": 4,
     "editor.stickyScroll.enabled": false,
     "editor.unfoldOnCursorMove": false,
-    "editor.wordWrap": "off",
+    "editor.wordWrap": "on",
+    "editor.semanticHighlighting.enabled": true,
+    "editor.showFoldingControls": "never",
+
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 0,
     "files.trimTrailingWhitespace": false,
+
     "git.openRepositoryInParentFolders": "always",
-    "github.copilot.enable": {
-        "*": false,
-        "plaintext": false,
-        "markdown": false,
-        "scminput": false
-    },
     "js/ts.updateImportsOnFileMove.enabled": "always",
     "liveServer.settings.donotShowInfoMsg": true,
     "security.workspace.trust.untrustedFiles": "open",
     "scm.diffDecorations": "none",
+
     "vim.foldfix": true,
     "vim.hlsearch": true,
     "vim.ignorecase": true,
@@ -220,18 +234,22 @@
             ]
         }
     ],
+
+    "python.analysis.typeCheckingMode": "strict",
+
+    "excalidraw.theme": "dark",
+
+    "workbench.browser.showInTitleBar": false,
     "workbench.layoutControl.enabled": false,
     "workbench.navigationControl.enabled": false,
     "workbench.startupEditor": "none",
     "workbench.editor.enablePreviewFromQuickOpen": false,
     "workbench.tree.indent": 20,
     "workbench.tree.renderIndentGuides": "always",
-    "vscode_custom_css.imports": [
-        "file:///home/danailov/.vscode/editor_custom_layout.css"
-    ],
-    "workbench.activityBar.location": "hidden",
-    "workbench.colorTheme": "JetBrains Rider Dark Theme",
-    "chat.viewSessions.orientation": "stacked",
-    "excalidraw.theme": "dark",
-    "python.analysis.typeCheckingMode": "strict"
+    "workbench.activityBar.location": "top",
+    "workbench.sideBar.location": "right",
+    "workbench.colorTheme": "Rosé Pine (tmux 256)",
+    "extensions.supportAgentsWindow": {
+        "ltmoerdani.opencode-copilot-chat": true
+    }
 }

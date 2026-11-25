@@ -8,6 +8,19 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+# --- PATH ---
+export PATH="$HOME/bin:$PATH"
+export PATH="$PATH:/opt/nvim/"
+export PATH="$PATH:/opt/rider/bin/"
+export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
+export PATH="$HOME/.opencode/bin:$PATH"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+# deno
+[ -s "$HOME/.deno/env" ] && . "$HOME/.deno/env" 
+
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
@@ -26,3 +39,4 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 . "$HOME/.cargo/env"
+. "/home/danailov/.deno/env"

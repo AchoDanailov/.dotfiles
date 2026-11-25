@@ -27,7 +27,6 @@ These are my personal dotfiles. And it goes beyond just my dotfiles, by adding a
 - [ripgrep](https://github.com/BurntSushi/ripgrep) - better grep
 - [fd-find](https://github.com/sharkdp/fd) - better find
 - [eza](https://github.com/eza-community/eza) - better ls
-- [opencode](https://github.com/anomalyco/opencode/)
 - [neovim](https://github.com/neovim/neovim) + [kickstart](https://github.com/nvim-lua/kickstart.nvim)
 
 #### **Installer script - `install.sh`**
